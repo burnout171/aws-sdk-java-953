@@ -5,11 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 import reactor.netty.DisposableServer;
+import reactor.netty.http.HttpProtocol;
 import reactor.netty.http.server.HttpServer;
 import reactor.netty.http.server.HttpServerRequest;
 import reactor.netty.http.server.HttpServerResponse;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.core.async.AsyncRequestBody;
+import software.amazon.awssdk.http.Protocol;
 import software.amazon.awssdk.http.nio.netty.NettyNioAsyncHttpClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
@@ -28,7 +30,6 @@ public class StreamToS3Issue {
     private final HttpServer httpServer;
 
     private DisposableServer disposableServer;
-
     public AtomicInteger sequence = new AtomicInteger(1);
 
     public StreamToS3Issue(String url, boolean checksumValidation) {
@@ -81,6 +82,7 @@ public class StreamToS3Issue {
             )
             .httpClient(
                 NettyNioAsyncHttpClient.builder()
+                    .protocol(Protocol.HTTP1_1)
                     .build()
             )
             .build();
@@ -97,6 +99,7 @@ public class StreamToS3Issue {
             var s3Request = PutObjectRequest.builder()
                 .bucket("test-bucket")
                 .key(Integer.toString(sequence.getAndIncrement()))
+                .contentType(request.requestHeaders().get("Content-Type"))
                 .contentLength(Long.parseLong(request.requestHeaders().get("Content-Length")))
                 .build();
             // prepare flux with ByteBuffer
@@ -126,6 +129,7 @@ public class StreamToS3Issue {
         return HttpServer.create()
             .host("localhost")
             .port(8080)
+            .protocol(HttpProtocol.HTTP11)
             .route(routes -> routes.post("/file", fileHandler));
     }
 

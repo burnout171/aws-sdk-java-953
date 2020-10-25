@@ -61,10 +61,12 @@ public class StreamToS3IssueTest {
     @BeforeEach
     void setUp() {
         s3Client.createBucket(b -> b.bucket("test-bucket"));
+        ctx.getLogger("software.amazon.awssdk").setLevel(Level.TRACE);
     }
 
     @AfterEach
     void tearDown() {
+        ctx.getLogger("software.amazon.awssdk").setLevel(Level.INFO);
         if (nonNull(issue)) {
             issue.stop();
         }
@@ -143,7 +145,7 @@ public class StreamToS3IssueTest {
     private HttpClientResponse sendFile(byte[] bytes) {
         return HttpClient.create()
             .headers(h -> h
-                .set(HttpHeaderNames.CONTENT_TYPE, "application/json")
+                .set(HttpHeaderNames.CONTENT_TYPE, "application/octet-stream")
                 .set(HttpHeaderNames.CONTENT_LENGTH, bytes.length)
             )
             .baseUrl("localhost:8080")
