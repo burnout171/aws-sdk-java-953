@@ -13,7 +13,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>11</java.version>
-    <amazon-sdk.version>2.15.11</amazon-sdk.version>
+    <amazon-sdk.version>2.16.99</amazon-sdk.version>
   </properties>
 
   <dependencies>
@@ -59,7 +59,7 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.14.3</version>
+      <version>1.15.3</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

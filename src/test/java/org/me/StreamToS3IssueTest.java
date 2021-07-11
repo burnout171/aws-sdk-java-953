@@ -36,7 +36,7 @@ public class StreamToS3IssueTest {
 
     private static final LoggerContext ctx = (LoggerContext) LoggerFactory.getILoggerFactory();
     // Test container with mock s3 implementation.
-    private static final GenericContainer<?> container = new GenericContainer<>("adobe/s3mock")
+    private static final GenericContainer<?> container = new GenericContainer<>("adobe/s3mock:2.1.34")
         .withExposedPorts(9090)
         .waitingFor(new LogMessageWaitStrategy().withRegEx("^.*Started S3MockApplication in.*"));
 
